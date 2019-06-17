@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.views.generic import TemplateView, ListView
 
 from product_importer.models import Product
+from product_importer.utils import import_data
 
 
 class HomePageView(TemplateView):
@@ -31,22 +32,14 @@ def upload_csv(request):
         return render(request, "index.html", data)
     # if not GET, then proceed
     try:
-        print("PEYE")
-        csv_file = request.FILES["csv_file"]
-        print (csv_file)
-        if not csv_file.name.endswith('.csv'):
-            messages.error(request,'File is not CSV type')
-            return HttpResponseRedirect(reverse("product_importer:home"))
-        handle_uploaded_file(csv_file)
+        file_url = request.POST.get('file_url')
+        import_data(file_url)
     except Exception as e:
         logging.getLogger("error_logger").error("Unable to upload file. "+repr(e))
         messages.error(request,"Unable to upload file. "+repr(e))
     return HttpResponseRedirect(reverse("product_importer:upload_csv"))
 
 
-def handle_uploaded_file(f):
-    for chunk in f.chunks():
-        pass
 
 
 def sign_s3(request):
@@ -56,8 +49,6 @@ def sign_s3(request):
   file_type = request.GET.get('file_type')
 
   s3 = boto3.client('s3', region_name='ap-south-1')
-
-  print (s3)
   presigned_post = s3.generate_presigned_post(
     Bucket = S3_BUCKET,
     Key = file_name,
