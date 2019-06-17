@@ -5,5 +5,6 @@ app_name = 'product_importer'
 urlpatterns = [
     # url(r'^$', views.HomePageView.as_view()),
     url(r'^$', views.upload_csv, name='upload_csv'),
-    url(r'products', views.ProductsView.as_view())
+    url(r'sign_s3', views.sign_s3, name='sign_s3'),
+    url(r'products', views.ProductsView.as_view()),
 ]

@@ -1,7 +1,9 @@
 import logging
-
+import boto3
+import json
+import os
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic import TemplateView, ListView
@@ -45,3 +47,28 @@ def upload_csv(request):
 def handle_uploaded_file(f):
     for chunk in f.chunks():
         pass
+
+
+def sign_s3(request):
+  # S3_BUCKET = os.environ.get('S3_BUCKET')
+  S3_BUCKET = 'fulfilio-product-importer'
+  file_name = request.GET.get('file_name')
+  file_type = request.GET.get('file_type')
+
+  s3 = boto3.client('s3', region_name='ap-south-1')
+
+  print (s3)
+  presigned_post = s3.generate_presigned_post(
+    Bucket = S3_BUCKET,
+    Key = file_name,
+    Fields = {"acl": "public-read", "Content-Type": file_type},
+    Conditions = [
+      {"acl": "public-read"},
+      {"Content-Type": file_type}
+    ],
+    ExpiresIn = 3600
+  )
+  return JsonResponse({
+    'data': presigned_post,
+    'url': 'https://%s.s3.amazonaws.com/%s' % (S3_BUCKET, file_name)
+  })
