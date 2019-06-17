@@ -18,7 +18,14 @@ class BulkCreateManager(object):
 
     def _commit(self, model_class):
         model_key = model_class._meta.label
-        model_class.objects.bulk_create(self._create_queues[model_key])
+        try:
+            model_class.objects.bulk_create(self._create_queues[model_key])
+        except Exception:
+            for item in self._create_queues[model_key]:
+                defaults = item.__dict__
+                del defaults['id']
+                del defaults['_state']
+                model_class.objects.update_or_create(sku=item.sku, defaults=defaults)
         self._create_queues[model_key] = []
 
     def add(self, obj):
@@ -31,6 +38,7 @@ class BulkCreateManager(object):
         self._create_queues[model_key].append(obj)
         if len(self._create_queues[model_key]) >= self.chunk_size:
             self._commit(model_class)
+
 
     def done(self):
         """
