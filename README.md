@@ -31,3 +31,13 @@ As a user, it should be possible to delete all existing records and start a fres
 2. Use `truncate` in place of `Model.objects.all().delete()`
 3. Read CSV file in bathces instead of rows, and copy to database
 4. Preprocess CSV to check for duplicates ad existing records
+
+## WorkFlow
+1. User uploads a CSV file
+2. File is uploaded into an S3 bucket and the url is POSTed to view
+3. The view calls the import_data function asynchronously
+4. The import_data function loads the file from S3 into tmp/
+5. Read file in chunks
+6. For each row, an object for the Model is initialised and kept in a queue
+7. On reaching chunk size, bulk_create is called
+8. If bulk_create fails with 'Integrity Error' due to existing record, for each record in the chunk, update_or_create is called
