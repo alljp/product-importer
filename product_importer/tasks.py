@@ -34,7 +34,7 @@ def import_data(url):
     with open(file, 'r') as csv_file:
         reader = csv.reader(csv_file)
         next(reader, None)
-        bulk_mgr = BulkCreateManager(chunk_size=2)
+        bulk_mgr = BulkCreateManager(chunk_size=1000)
         for row in reader:
             print(row)
             bulk_mgr.add(Product(sku=row[1], name=row[0], description=row[2]))
