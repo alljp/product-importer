@@ -17,7 +17,6 @@ class HomePageView(TemplateView):
         return render(request, 'index.html', context=None)
 
 
-
 class ProductsView(ListView):
     model = Product
     template_name = 'products_list.html'
@@ -59,8 +58,6 @@ def upload_csv(request):
     return HttpResponseRedirect(reverse("product_importer:upload_csv"))
 
 
-
-
 def sign_s3(request):
   # S3_BUCKET = os.environ.get('S3_BUCKET')
   S3_BUCKET = 'fulfilio-product-importer'
@@ -82,3 +79,9 @@ def sign_s3(request):
       'data': presigned_post,
       'url': 'https://%s.s3.amazonaws.com/%s' % (S3_BUCKET, file_name)
   })
+
+
+def delete_records(request):
+  count, _ = Product.objects.all().delete()
+  data = {'deleted_count': count}
+  return render(request, "index.html", data)

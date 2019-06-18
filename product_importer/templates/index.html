@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% if deleted_count >= 0 %}
+    <div class="alert alert-info alert-dismissable">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true" onclick="location.href = '/';">&times;</button>
+      {{deleted_count}} records were deleted
+    </div>
+{% endif %}
 <div class="jumbotron">
     <form action="{% url 'product_importer:upload_csv' %}" method="POST" class="form-horizontal">
     {% csrf_token %}
@@ -22,6 +28,11 @@
 <div class="jumbotron" style="text-align:center">
     <div style="margin-bottom:10px;">
          <button class="btn btn-primary" id="products" onclick="location.href = 'products/';" > <span class="glyphicon glyphicon-share-alt" style="margin-right:5px;"></span>Go to Products Page</button>
+    </div>
+</div>
+<div class="jumbotron" style="text-align:center">
+    <div style="margin-bottom:10px;">
+         <button class="btn btn-primary" id="products" onclick="deleteRecords()" > <span class="glyphicon glyphicon-remove" style="margin-right:5px;"></span>Delete records</button>
     </div>
 </div>
 
@@ -79,6 +90,12 @@
         }
       };
       xhr.send(postData);
+    }
+
+    function deleteRecords() {
+      if (confirm("Do you want to delete!")) {
+        location.href = 'delete/';
+      }
     }
 
 </script>
