@@ -25,6 +25,25 @@ class ProductsView(ListView):
     paginate_by = 10
     queryset = Product.objects.all()
 
+    def get_context_data(self,**kwargs):
+      context = super(ProductsView, self).get_context_data(**kwargs)
+      search_key = self.request.GET.get('search_key')
+      is_active = self.request.GET.get('is_active')
+      if search_key is not None:
+        context['search_key'] = search_key
+      if is_active is not None:
+        context['is_active'] = is_active
+      return context
+
+    def get_queryset(self):
+        search_key = self.request.GET.get('search_key')
+        is_active = self.request.GET.get('is_active')
+        if search_key:
+          self.queryset = self.queryset.filter(name__icontains=search_key)
+        if is_active:
+          self.queryset = self.queryset.filter(is_active=is_active)
+        return self.queryset
+
 
 def upload_csv(request):
     data = {}
