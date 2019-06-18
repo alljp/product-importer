@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.views.generic import TemplateView, ListView
 
 from product_importer.models import Product
-from product_importer.utils import import_data
+from product_importer.tasks import import_data
 
 
 class HomePageView(TemplateView):

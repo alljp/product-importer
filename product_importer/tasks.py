@@ -1,5 +1,6 @@
 import boto3
 import csv
+from celery.decorators import task
 
 from product_importer.bulk_create_manager import BulkCreateManager
 from product_importer.models import Product
@@ -22,7 +23,7 @@ def load_file(url):
     s3.download_file('fulfilio-product-importer', key, file_location)
     return file_location
 
-
+@task()
 def import_data(url):
     """
     Open and read from file
