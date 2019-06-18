@@ -33,7 +33,7 @@ def upload_csv(request):
     # if not GET, then proceed
     try:
         file_url = request.POST.get('file_url')
-        import_data(file_url)
+        import_data.delay(file_url)
     except Exception as e:
         logging.getLogger("error_logger").error("Unable to upload file. "+repr(e))
         messages.error(request,"Unable to upload file. "+repr(e))

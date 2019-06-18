@@ -4,8 +4,8 @@ from celery import Celery
 
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'fulfil_assignment.settings')
-
-app = Celery('proj')
+redis_url = os.environ.get('REDIS_URL')
+app = Celery('proj', broker=redis_url, result_backend=redis_url)
 
 # Using a string here means the worker don't have to serialize
 # the configuration object to child processes.
