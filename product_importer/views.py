@@ -26,14 +26,14 @@ class ProductsView(ListView):
     queryset = Product.objects.all()
 
     def get_context_data(self,**kwargs):
-      context = super(ProductsView, self).get_context_data(**kwargs)
-      search_key = self.request.GET.get('search_key')
-      is_active = self.request.GET.get('is_active')
-      if search_key is not None:
-        context['search_key'] = search_key
-      if is_active is not None:
-        context['is_active'] = is_active
-      return context
+        context = super(ProductsView, self).get_context_data(**kwargs)
+        search_key = self.request.GET.get('search_key')
+        is_active = self.request.GET.get('is_active')
+        if search_key is not None:
+          context['search_key'] = search_key
+        if is_active is not None:
+          context['is_active'] = is_active
+        return context
 
     def get_queryset(self):
         search_key = self.request.GET.get('search_key')
@@ -69,16 +69,16 @@ def sign_s3(request):
 
   s3 = boto3.client('s3', region_name='ap-south-1')
   presigned_post = s3.generate_presigned_post(
-    Bucket = S3_BUCKET,
-    Key = file_name,
-    Fields = {"acl": "public-read", "Content-Type": file_type},
-    Conditions = [
-      {"acl": "public-read"},
-      {"Content-Type": file_type}
-    ],
-    ExpiresIn = 3600
+      Bucket = S3_BUCKET,
+      Key = file_name,
+      Fields = {"acl": "public-read", "Content-Type": file_type},
+      Conditions = [
+        {"acl": "public-read"},
+        {"Content-Type": file_type}
+      ],
+      ExpiresIn = 3600
   )
   return JsonResponse({
-    'data': presigned_post,
-    'url': 'https://%s.s3.amazonaws.com/%s' % (S3_BUCKET, file_name)
+      'data': presigned_post,
+      'url': 'https://%s.s3.amazonaws.com/%s' % (S3_BUCKET, file_name)
   })
