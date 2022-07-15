@@ -7,7 +7,7 @@ celery==4.3.0
 colorama==0.3.9
 dj-database-url==0.5.0
 django>=2.2.4
-django-celery-results==1.1.2
+django-celery-results==2.4.0
 docutils==0.14
 gunicorn==19.9.0
 jmespath==0.9.4
